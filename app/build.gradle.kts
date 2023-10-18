@@ -26,21 +26,21 @@ android {
 
     buildTypes.all {
         val props = Properties().apply {
-            load(file("src/${this@all.name}/assets/app.properties").inputStream())
+            load(file("src/${this@all.name}/assets/private.properties").inputStream())
         }
 
         buildConfigField("String", "loginId", props.getProperty("loginId"))
         buildConfigField("String", "secretKey", props.getProperty("secretKey"))
+        buildConfigField("String", "URL_CHECKOUT", props.getProperty("urlEnvironment"))
     }
 
     buildTypes {
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "URL_CHECKOUT", "\"https://checkout-co.placetopay.dev\"")
         }
         release {
-            isMinifyEnabled = false
-            buildConfigField("String", "URL_CHECKOUT", "\"https://checkout.placetopay.com\"")
+            isMinifyEnabled = true
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
