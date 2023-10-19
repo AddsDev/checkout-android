@@ -44,6 +44,7 @@ import com.placetopay.p2pr.compose.shoppingcart.ItemProduct
 import com.placetopay.p2pr.compose.utils.IconTitleContainer
 import com.placetopay.p2pr.compose.utils.TopAppBarContainer
 import com.placetopay.p2pr.data.checkout.base.CheckoutAmount
+import com.placetopay.p2pr.data.checkout.base.CheckoutAuth
 import com.placetopay.p2pr.data.checkout.base.CheckoutItem
 import com.placetopay.p2pr.data.checkout.base.CheckoutPayment
 import com.placetopay.p2pr.data.checkout.base.CheckoutStatus
@@ -311,6 +312,7 @@ fun PreviewReceiptScreen() {
             date = "2023-09-25T10:25:57-05:00"
         ),
         request = CheckoutPaymentRequest(
+            auth = CheckoutAuth("login", "secret"),
             expiration = "2023-09-26T10:25:51-05:00",
             locale = "es_CO",
             payment = CheckoutPayment(
@@ -330,6 +332,9 @@ fun PreviewReceiptScreen() {
                 )
             ),
             returnUrl = "https://dnetix.co/p2p/client",
+            cancelUrl = "https://dnetix.co/p2p/client",
+            userAgent = "Mozilla/5.0 (X11; Linux x86_64)..",
+            ipAddress = "192.168.0.1"
         )
     )
 }

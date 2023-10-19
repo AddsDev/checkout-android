@@ -14,6 +14,7 @@ import com.placetopay.p2pr.data.checkout.payment.CheckoutInformationResponse
 import com.placetopay.p2pr.data.checkout.payment.CheckoutPaymentRequest
 import com.placetopay.p2pr.data.checkout.payment.CheckoutPaymentResponse
 import com.placetopay.p2pr.data.common.validateResponse
+import com.placetopay.p2pr.utilities.Constants
 import com.placetopay.p2pr.utilities.addHours
 import com.placetopay.p2pr.utilities.executeSafely
 import com.placetopay.p2pr.utilities.getIpAddress
@@ -43,7 +44,7 @@ class CheckoutRepository @Inject constructor(
             taxes = mutableListOf(
                 CheckoutTaxes(
                     amount = .0,
-                    kind = "tax_shipping"
+                    kind = "tax"
                 )
             )
         }
@@ -65,7 +66,8 @@ class CheckoutRepository @Inject constructor(
             ),
             ipAddress = getIpAddress(),
             userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
-            returnUrl = "redirection://receipt?return"
+            returnUrl = Constants.RETURN_URL,
+            cancelUrl = Constants.CANCEL_URL,
         )
         return executeSafely { service.createSession(payment).validateResponse() }
     }

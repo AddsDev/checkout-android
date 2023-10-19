@@ -6,9 +6,9 @@ import com.placetopay.p2pr.data.checkout.base.CheckoutField
 import com.placetopay.p2pr.data.checkout.base.CheckoutPayment
 
 data class CheckoutPaymentRequest(
-    val auth: CheckoutAuth? = null,
+    val auth: CheckoutAuth,
     val buyer: CheckoutBuyer? = null,
-    val cancelUrl: String? = null,
+    val cancelUrl: String,
     val captureAddress: Boolean = false,
     val expiration: String,
     val fields: List<CheckoutField>? = null,
@@ -16,7 +16,7 @@ data class CheckoutPaymentRequest(
     val noBuyerFill: Boolean = false,
     val payment: CheckoutPayment,
     val returnUrl: String,
-    val ipAddress: String? = null,
+    val ipAddress: String,
     val skipResult: Boolean = false,
-    val userAgent: String? = null
+    val userAgent: String
 )
