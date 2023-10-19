@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShoppingCartViewModel @Inject internal constructor(
-    private val service: CheckoutService,
     private val packageRepository: PackageRepository,
 ) : ViewModel() {
 
