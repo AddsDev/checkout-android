@@ -50,7 +50,7 @@ fun ButtonLoading(
     var backgroundColor by remember { mutableStateOf(Yellow600) }
     var disabledColor by remember { mutableStateOf(Yellow700) }
     Button(
-        onClick = onClick, modifier = modifier, colors = ButtonDefaults.buttonColors(
+        onClick = onClick, modifier = modifier.padding(vertical = 2.dp), colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor, disabledContainerColor = disabledColor
         ), enabled = enabled
     ) {
