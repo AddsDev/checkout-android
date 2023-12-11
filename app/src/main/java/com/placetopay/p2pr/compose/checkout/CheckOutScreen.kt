@@ -1,11 +1,9 @@
 package com.placetopay.p2pr.compose.checkout
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -91,6 +89,10 @@ fun CheckoutWebView(processUrl: String, refreshWebView: Boolean, onFinished: () 
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             clearCache(true)
+
+            CookieManager.getInstance().setAcceptCookie(true)
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+
             webChromeClient = WebChromeClient()
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(
