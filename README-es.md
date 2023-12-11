@@ -32,19 +32,21 @@ la [documentación](https://docs.placetopay.dev/checkout).
 - [Glosario](#glosario)
 
 ### Versión
+
 - [Inglés](README.md)
 
 ***
 
 ## Autenticación
 
-El parámetro de __auth__ debe enviarse en __todas las solicitudes del API__ y contiene el conjunto de propiedades necesarias para verificar la autenticación.
+El parámetro de __auth__ debe enviarse en __todas las solicitudes del API__ y contiene el conjunto de propiedades
+necesarias para verificar la autenticación.
 
 ### Requerimientos
 
 > Para integrarse con Checkout, debe tener sus credenciales de `login` y `secretKey`.
 
-- `login`: El identificador del sitio puede considerarse público ya que viaja como datos simples en las solicitudes de API.
+- `login`: El identificador del sitio puede considerarse público, ya que viaja como datos simples en las solicitudes de API.
 - `secretKey`: Clave secreta del sitio, debe ser privada, a partir de este dato se generará una nueva `tranKey` que será
   enviado en las solicitudes.
 
@@ -70,7 +72,7 @@ Debes preparar la siguiente información:
 ***
 
 La clase de ejemplo `CheckoutAuth` se utiliza como parámetro de la solicitud en operaciones de autenticación.
-La clase incluye métodos privados para cálculos criptográficos, garantizando la seguridad y confidencialidad de los
+La clase incluye métodos privados para cálculos criptográficos, garantizando la seguridad y confidencialidad de la
 autenticación.
 
 ``` kotlin
@@ -161,12 +163,11 @@ interface CheckoutService {
 
 Creando una nueva solicitud de pago para obtener una URL de pago de la sesión.
 
-Simplemente proporcione la información del pago necesario y obtendrá una URL del proceso si se realiza correctamente. Para este ejemplo,
+Simplemente, proporcione la información del pago necesario y obtendrá una URL del proceso si se realiza correctamente. Para este ejemplo,
 están utilizando la **Información básica** que debe proporcionarse; para ver la estructura completa, consulte
 la [documentación](https://docs.placetopay.dev/en/checkout/create-session).
 
-La clase de ejemplo `CheckoutPaymentRequest` se utiliza como cuerpo de solicitud. La clase incluye el pago, comprador, envío.
-y otra información.
+La clase de ejemplo `CheckoutPaymentRequest` se utiliza como cuerpo de solicitud. La clase incluye el pago, comprador, envío y otra información.
 
 ``` kotlin
 data class CheckoutPaymentRequest(
@@ -233,7 +234,8 @@ data class CheckoutPaymentRequest(
 }
 ```
 
-La clase de ejemplo `CheckoutPaymentResponse` se utiliza como cuerpo de respuesta. La clase incluye el estado, la identificación de la solicitud y la URL de pago.
+La clase de ejemplo `CheckoutPaymentResponse` se utiliza como cuerpo de respuesta. La clase incluye el estado, la
+identificación de la solicitud y la URL de pago.
 
 ``` kotlin
 data class CheckoutPaymentResponse(
@@ -265,7 +267,8 @@ data class CheckoutPaymentResponse(
 Este endpoint le permite obtener la información de la sesión, si hay transacciones en la sesión, los detalles
 de los mismos se muestran.
 
-La clase de ejemplo `CheckoutInformationRequest` se utiliza como cuerpo de la solicitud. La clase incluye información de la autenticación.
+La clase de ejemplo `CheckoutInformationRequest` se utiliza como cuerpo de la solicitud. La clase incluye información de
+la autenticación.
 
 ``` kotlin
 data class CheckoutInformationRequest(
@@ -286,8 +289,8 @@ data class CheckoutInformationRequest(
 }
 ```
 
-La clase de ejemplo `CheckoutInformationResponse` se utiliza como cuerpo de la respuesta. La clase incluye el estado, la identificación de la solicitud.
-e información de pago.
+La clase de ejemplo `CheckoutInformationResponse` se utiliza como cuerpo de la respuesta. La clase incluye el estado, la
+identificación de la solicitud e información de pago.
 
 ``` kotlin
 data class CheckoutInformationResponse(
@@ -300,7 +303,7 @@ data class CheckoutInformationResponse(
 
 `CheckoutInformationResponse`  como parámetro en el cuerpo de la solicitud en JSON.
 
->  Consulte [la respuesta de completa](examples/information_response.json)
+> Consulte [la respuesta de completa](examples/information_response.json)
 
 ``` json
 {
@@ -379,7 +382,9 @@ data class CheckoutInformationResponse(
 
 ### Configurar la WebView
 
-Estas configuraciones ayudan a optimizar y personalizar la experiencia de navegación dentro del WebView.
+Estas configuraciones ayudan a optimizar y personalizar la experiencia de navegación dentro del WebView. Es importante
+que puedas identificar cuál es la URL de retorno y la URL de cancelación para poder cerrar el WebView una vez finalice
+el proceso de pago.
 
 > Configuración del WebView para una visualización correcta de Checkout
 
@@ -389,9 +394,17 @@ AndroidView(factory = {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             clearCache(true)
+            CookieManager.getInstance().setAcceptCookie(true)
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
             webChromeClient = WebChromeClient()
             webViewClient = object : WebViewClient() {
-                ...
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?, request: WebResourceRequest?
+                ): Boolean {
+                    if (request?.url.toString() == returnUrl || request?.url.toString() == cancelUrl)
+                        onFinished()
+                    return super.shouldOverrideUrlLoading(view, request)
+                }
             }
             loadUrl(...)
         }
@@ -408,6 +421,7 @@ AndroidView(factory = {
 | `DomStorageEnabled`                   | Permite que las páginas web almacenen datos localmente, lo que puede mejorar la velocidad y el rendimiento. |
 | `ClearCache`                          | Borra la caché de WebView antes de cargar una nueva URL.                                                    |
 | `WebChromeClient` and `WebViewClient` | Configura el comportamiento del WebView para eventos como la carga y la interacción con la página.          |
+| `CookieManager`                       | Permite el uso de cookies en el WebView.                                                                    |
 
 ---
 
@@ -438,16 +452,16 @@ git clone https://github.com/placetopay-org/checkout-android.git
 
 ### Librerías
 
-| Librería         | Version                                                |
-|:-----------------|:-------------------------------------------------------|
-| Compose BOM      | `androidx.compose:compose-bom:2023.03.00`              |
-| View Model       | `androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1` |
-| Glide            | `com.github.bumptech.glide:compose:1.0.0-alpha.5`      |
-| Dagger Hilt      | `com.google.dagger:hilt-android:2.44.2`                |
-| Hilt Navigation  | `androidx.hilt:hilt-navigation-compose:1.0.0`          |
-| Retrofit         | `com.squareup.retrofit2:retrofit:2.9.0`                |
-| Gson Converter   | `com.squareup.retrofit2:converter-gson:2.9.0`          |
-| Chucker          | `com.github.chuckerteam.chucker:library:4.0.0`         |
+| Librería        | Version                                                |
+|:----------------|:-------------------------------------------------------|
+| Compose BOM     | `androidx.compose:compose-bom:2023.03.00`              |
+| View Model      | `androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1` |
+| Glide           | `com.github.bumptech.glide:compose:1.0.0-alpha.5`      |
+| Dagger Hilt     | `com.google.dagger:hilt-android:2.44.2`                |
+| Hilt Navigation | `androidx.hilt:hilt-navigation-compose:1.0.0`          |
+| Retrofit        | `com.squareup.retrofit2:retrofit:2.9.0`                |
+| Gson Converter  | `com.squareup.retrofit2:converter-gson:2.9.0`          |
+| Chucker         | `com.github.chuckerteam.chucker:library:4.0.0`         |
 
 ---
 

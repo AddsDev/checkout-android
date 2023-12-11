@@ -17,8 +17,8 @@ the [docs page](https://docs.placetopay.dev/checkout)
 ### Integrating Checkout
 
 - [Authentication](#authentication)
-  - [Requirements](#requirements)
-  - [How to generate your authentication](#how-to-generate-your-authentication)
+    - [Requirements](#requirements)
+    - [How to generate your authentication](#how-to-generate-your-authentication)
 - [Setup services with Retrofit](#setup-services-with-retrofit)
 - [Create session](#create-session)
 - [Query a session](#query-a-session)
@@ -32,6 +32,7 @@ the [docs page](https://docs.placetopay.dev/checkout)
 - [Glossary](#glossary)
 
 ### Language
+
 - [Español](README-es.md)
 
 ***
@@ -50,9 +51,8 @@ authentication.
   sent in the requests.
 
 > These credentials are unique to your site and should be treated securely.
-> 
-> Do not share your credentials in public accessible areas such as Github, client-side code or other places easily to
-> third parties.
+>
+> Do not share your credentials in public accessible areas such as Github, client-side code or other places easily to third parties.
 
 ### [How to generate your authentication](https://docs.placetopay.dev/en/checkout/authentication#how-to-generate-your-authentication)
 
@@ -67,9 +67,7 @@ You must know and prepare the following information:
 | `tranKey`   | Generated on every request programmatically. It is generated with the following formulas Base64(SHA-256(nonce + seed + secretKey)).                                        |
 
 > For this example, a Colombia environment is being used.
-> For more information,
-> see
-> the [directory of environments](https://docs.placetopay.dev/en/checkout/test-your-integration#directory-of-environments)
+> For more information, see the [directory of environments](https://docs.placetopay.dev/en/checkout/test-your-integration#directory-of-environments)
 
 ***
 
@@ -384,7 +382,8 @@ data class CheckoutInformationResponse(
 
 ### Settings your WebView
 
-These settings help optimize and customize the browsing experience within the Android application's WebView.
+These settings help optimize and customize the browsing experience within the WebView. It's important that you can
+identify the return URL and cancellation URL to be able to close the WebView once the payment process is complete.
 
 > WebView configuration for optimal Web Checkout display
 
@@ -394,9 +393,17 @@ AndroidView(factory = {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             clearCache(true)
+            CookieManager.getInstance().setAcceptCookie(true)
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
             webChromeClient = WebChromeClient()
             webViewClient = object : WebViewClient() {
-                ...
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?, request: WebResourceRequest?
+                ): Boolean {
+                    if (request?.url.toString() == returnUrl || request?.url.toString() == cancelUrl)
+                        onFinished()
+                    return super.shouldOverrideUrlLoading(view, request)
+                }
             }
             loadUrl(...)
         }
@@ -413,6 +420,7 @@ AndroidView(factory = {
 | `DomStorageEnabled`                   | Enables web pages to store data locally, which can improve speed and performance.              |
 | `ClearCache`                          | Clears the WebView cache before loading a new URL.                                             |
 | `WebChromeClient` and `WebViewClient` | Configure the WebView's behavior for events such as URL loading and interaction with the page. |
+| `CookieManager`                       | Enables third-party cookies in WebView.                                                        |
 
 ---
 
